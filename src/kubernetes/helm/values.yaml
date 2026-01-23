@@ -6,6 +6,9 @@ global:
 # Image pull secrets
 imagePullSecrets:
   dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaGNyLmlvIjogewoJCQkiYXV0aCI6
+
+# Database configuration
+database:
   host: postgres
   port: 5432
   name: cinemaabyss
@@ -180,4 +183,4 @@ ingress:
 config:
   # Strangler Fig configuration
   gradualMigration: "true"
-  moviesMigrationPercent: "100"
+  moviesMigrationPercent: "50"
