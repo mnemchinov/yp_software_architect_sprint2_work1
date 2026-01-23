@@ -391,3 +391,55 @@ https://cinemaabyss.example.com/api/movies
 kubectl delete all --all -n cinemaabyss
 kubectl delete namespace cinemaabyss
 ```
+
+---
+
+## Скриншоты результатов
+
+### Задание 2: Postman Tests
+
+**Результаты тестов (Docker Compose):**
+```
+Total requests: 22
+Failed requests: 0
+Total assertions: 42
+Failed assertions: 0
+```
+
+| Сервис | Status |
+|--------|--------|
+| Monolith Service | ✅ 11/11 passed |
+| Movies Microservice | ✅ 4/4 passed |
+| Events Microservice | ✅ 3/3 passed |
+| Proxy Service | ✅ 3/3 passed |
+
+### Задание 2: Kafka Topics
+
+```
+__consumer_offsets
+movie-events
+payment-events
+user-events
+```
+
+### Задание 2: Градуальная миграция
+
+| MOVIES_MIGRATION_PERCENT | Источник |
+|-------------------------|----------|
+| 0 | Monolith (GET http://monolith:8080/api/movies) |
+| 50 | Mixed (50% each) |
+| 100 | Movies Service (GET http://movies-service:8081/api/movies) |
+
+### Задание 3: Kubernetes Deployment (скриншоты будут после развёртывания)
+
+[Скриншот kubectl get pod -n cinemaabyss]
+
+[Скриншот curl http://cinemaabyss.example.com/api/movies]
+
+[Скриншот логов events-service]
+
+### Задание 4: Helm Installation (скриншоты будут после установки)
+
+[Скриншот helm install cinemaabyss ./src/kubernetes/helm]
+
+[Скриншот curl http://cinemaabyss.example.com/api/movies после Helm]
