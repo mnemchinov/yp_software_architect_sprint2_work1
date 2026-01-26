@@ -1,0 +1,1 @@
+TODO: Create screenshot of kubectl logs -l app=events-service -n cinemaabyss
