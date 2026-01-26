@@ -89,14 +89,14 @@ jobs:
         id: meta-events
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}/events-service
+          images: ${{ env.REGISTRY }}/${{ env.EVENTS_SERVICE_IMAGE_NAME }}
           tags: |
-            type=sha
+            type=sha,format=short
             type=ref,event=branch
-            type=raw,enable=${{ github.event_name == 'release' }}
+            latest
 
       - name: Build and push Events Service
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v5
         with:
           context: ./src/microservices/events
           push: true
@@ -111,14 +111,14 @@ jobs:
         id: meta-proxy
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}/proxy-service
+          images: ${{ env.REGISTRY }}/${{ env.PROXY_SERVICE_IMAGE_NAME }}
           tags: |
-            type=sha
+            type=sha,format=short
             type=ref,event=branch
-            type=raw,enable=${{ github.event_name == 'release' }}
+            latest
 
       - name: Build and push Proxy Service
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v5
         with:
           context: ./src/microservices/proxy
           push: true
