@@ -84,49 +84,55 @@ jobs:
           cache-to: type=gha,mode=max
           provenance: false
 
-      # Events Service
+      # Events Service - using separate build and push
       - name: Extract metadata for Events Service
         id: meta-events
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.EVENTS_SERVICE_IMAGE_NAME }}
+          images: ${{ env.EVENTS_SERVICE_IMAGE_NAME }}
           tags: |
             type=sha,format=short
             type=ref,event=branch
             latest
 
-      - name: Build and push Events Service
+      - name: Build Events Service
         uses: docker/build-push-action@v5
         with:
           context: ./src/microservices/events
-          push: true
-          tags: ${{ steps.meta-events.outputs.tags }}
-          labels: ${{ steps.meta-events.outputs.labels }}
+          push: false
+          tags: ${{ env.REGISTRY }}/${{ env.EVENTS_SERVICE_IMAGE_NAME }}:latest,${{ env.REGISTRY }}/${{ env.EVENTS_SERVICE_IMAGE_NAME }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          provenance: false
 
-      # Proxy Service
+      - name: Push Events Service
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ env.EVENTS_SERVICE_IMAGE_NAME }}:latest
+          docker push ${{ env.REGISTRY }}/${{ env.EVENTS_SERVICE_IMAGE_NAME }}:${{ github.sha }}
+
+      # Proxy Service - using separate build and push
       - name: Extract metadata for Proxy Service
         id: meta-proxy
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.PROXY_SERVICE_IMAGE_NAME }}
+          images: ${{ env.PROXY_SERVICE_IMAGE_NAME }}
           tags: |
             type=sha,format=short
             type=ref,event=branch
             latest
 
-      - name: Build and push Proxy Service
+      - name: Build Proxy Service
         uses: docker/build-push-action@v5
         with:
           context: ./src/microservices/proxy
-          push: true
-          tags: ${{ steps.meta-proxy.outputs.tags }}
-          labels: ${{ steps.meta-proxy.outputs.labels }}
+          push: false
+          tags: ${{ env.REGISTRY }}/${{ env.PROXY_SERVICE_IMAGE_NAME }}:latest,${{ env.REGISTRY }}/${{ env.PROXY_SERVICE_IMAGE_NAME }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          provenance: false
+
+      - name: Push Proxy Service
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ env.PROXY_SERVICE_IMAGE_NAME }}:latest
+          docker push ${{ env.REGISTRY }}/${{ env.PROXY_SERVICE_IMAGE_NAME }}:${{ github.sha }}
 
       # API Tests
       - name: Setup Node.js
