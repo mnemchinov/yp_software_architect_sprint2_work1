@@ -59,6 +59,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # Sleep to avoid rate limiting
+      - name: Sleep between pushes
+        run: sleep 10
+
       # Movies Service
       - name: Extract metadata for Movies Service
         id: meta-movies
@@ -80,6 +84,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # Sleep to avoid rate limiting
+      - name: Sleep between pushes
+        run: sleep 10
+
       # Events Service
       - name: Extract metadata for Events Service
         id: meta-events
@@ -100,7 +108,10 @@ jobs:
           labels: ${{ steps.meta-events.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          load: true
+
+      # Sleep to avoid rate limiting
+      - name: Sleep between pushes
+        run: sleep 10
 
       # Proxy Service
       - name: Extract metadata for Proxy Service
@@ -122,7 +133,6 @@ jobs:
           labels: ${{ steps.meta-proxy.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          load: true
 
       # API Tests
       - name: Setup Node.js
