@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+Я делаapiVersion: apps/v1
 kind: Deployment
 metadata:
   name: events-service
@@ -13,9 +13,11 @@ spec:
       labels:
         app: events-service
     spec:
+      imagePullSecrets:
+        - name: dockerconfigjson
       containers:
         - name: events-service
-          image: ghcr.io/yp_software_architect_sprint2_work1/events-service:latest
+          image: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/events-service:latest
           ports:
             - containerPort: 8082
           env:

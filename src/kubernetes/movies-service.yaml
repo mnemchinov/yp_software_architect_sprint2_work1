@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: movies-service
-        image: ghcr.io/${{ github.repository }}/movies-service:latest
+        image: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/movies-service:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8081
