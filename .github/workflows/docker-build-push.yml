@@ -23,6 +23,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+      attestations: write
+      id-token: write
 
     steps:
       - name: Checkout repository
@@ -58,10 +60,7 @@ jobs:
           labels: ${{ steps.meta-monolith.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      # Sleep to avoid rate limiting
-      - name: Sleep between pushes
-        run: sleep 10
+          provenance: false
 
       # Movies Service
       - name: Extract metadata for Movies Service
@@ -83,10 +82,7 @@ jobs:
           labels: ${{ steps.meta-movies.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      # Sleep to avoid rate limiting
-      - name: Sleep between pushes
-        run: sleep 10
+          provenance: false
 
       # Events Service
       - name: Extract metadata for Events Service
@@ -108,10 +104,7 @@ jobs:
           labels: ${{ steps.meta-events.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      # Sleep to avoid rate limiting
-      - name: Sleep between pushes
-        run: sleep 10
+          provenance: false
 
       # Proxy Service
       - name: Extract metadata for Proxy Service
@@ -133,6 +126,7 @@ jobs:
           labels: ${{ steps.meta-proxy.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          provenance: false
 
       # API Tests
       - name: Setup Node.js
