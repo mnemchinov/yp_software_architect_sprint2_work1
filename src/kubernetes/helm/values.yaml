@@ -5,7 +5,7 @@ global:
 
 # Image pull secrets (base64 encoded docker config)
 imagePullSecrets:
-  dockerconfigjson: ""
+  dockerconfigjson: eyJhdXRocyI6IHsiZ2hjci5pbyI6IHsiYXV0aCI6ICJiVzVsYldOb2FXNXZkanBuYUhCZllYTlVaalZoUjJsVk9VSXdla3gwZWpRMWNHb3pVa1Z4U21Nd2VUZFZNekZpU1hSUyJ9fX0=
 
 # Database configuration
 database:
