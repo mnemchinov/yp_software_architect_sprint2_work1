@@ -1,1 +1,0 @@
-TODO: Create screenshot of curl https://cinemaabyss.example.com/api/movies after Helm install

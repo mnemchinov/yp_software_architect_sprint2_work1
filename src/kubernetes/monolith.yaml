@@ -23,7 +23,7 @@ spec:
       containers:
       - name: monolith
         image: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/monolith:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
         env:

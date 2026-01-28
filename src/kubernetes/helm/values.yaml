@@ -13,7 +13,7 @@ database:
   port: 5432
   name: cinemaabyss
   user: postgres
-  password: postgres_password
+  password: cG9zdGdyZXNfcGFzc3dvcmQ=
   image:
     repository: postgres
     tag: 14
@@ -36,7 +36,7 @@ monolith:
   image:
     repository: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/monolith
     tag: latest
-    pullPolicy: Always
+    pullPolicy: Never
   replicas: 1
   resources:
     limits:
@@ -56,7 +56,7 @@ proxyService:
   image:
     repository: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/proxy-service
     tag: latest
-    pullPolicy: Always
+    pullPolicy: Never
   replicas: 1
   resources:
     limits:
@@ -76,7 +76,7 @@ moviesService:
   image:
     repository: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/movies-service
     tag: latest
-    pullPolicy: Always
+    pullPolicy: Never
   replicas: 1
   resources:
     limits:
@@ -96,7 +96,7 @@ eventsService:
   image:
     repository: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/events-service
     tag: latest
-    pullPolicy: Always
+    pullPolicy: Never
   replicas: 1
   resources:
     limits:
@@ -171,6 +171,10 @@ ingress:
     - host: cinemaabyss.example.com
       paths:
         - path: /
+          pathType: Prefix
+          service: proxy-service
+          port: 80
+        - path: /api/movies
           pathType: Prefix
           service: proxy-service
           port: 80
