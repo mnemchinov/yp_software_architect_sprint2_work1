@@ -80,8 +80,6 @@ curl http://localhost:8000/api/mmovies
 
 ## CI/CD
 
-Статус: Выполнено
-
 Workflow: `.github/workflows/docker-build-push.yml`
 
 Триггеры:
@@ -149,8 +147,6 @@ curl https://cinemaabyss.example.com/api/movies
 - [Events Service Logs](screenshots/task3-events-logs.png)
 
 # Задание 4: Helm Charts
-
-Статус: Выполнено
 
 Расположение: `src/kubernetes/helm/`
 
