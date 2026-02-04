@@ -26,8 +26,8 @@ LICENSE*
 target/
 dist/
 # Test files
-**/test/
-**/tests/
+test/
+tests/
 # Runtime data
 *.pid
 *.seed
