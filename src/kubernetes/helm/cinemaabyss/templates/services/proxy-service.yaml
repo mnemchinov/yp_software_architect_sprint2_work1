@@ -6,8 +6,7 @@ metadata:
   namespace: {{ .Values.global.namespace }}
   labels:
     app: proxy-service
-    app.kubernetes.io/name: {{ include "cinemaabyss.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "cinemaabyss.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.proxyService.replicas }}
   selector:
@@ -61,8 +60,6 @@ spec:
             port: 8000
           initialDelaySeconds: 3
           periodSeconds: 5
-      imagePullSecrets:
-        - name: dockerconfigjson
 ---
 apiVersion: v1
 kind: Service
@@ -71,8 +68,7 @@ metadata:
   namespace: {{ .Values.global.namespace }}
   labels:
     app: proxy-service
-    app.kubernetes.io/name: {{ include "cinemaabyss.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "cinemaabyss.labels" . | nindent 4 }}
 spec:
   selector:
     app: proxy-service

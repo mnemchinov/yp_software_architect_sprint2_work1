@@ -1,31 +1,26 @@
-FROM golang:1.23-alpine AS builder
+FROM --platform=linux/amd64 golang:1.23-alpine AS builder
+
+WORKDIR /src
+
+COPY go.mod ./
+RUN go mod download
+
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /app/monolith .
+
+FROM alpine:3.19
+
+RUN apk --no-cache add ca-certificates && \
+    addgroup -g 1000 appgroup && \
+    adduser -u 1000 -G appgroup -s /bin/sh -D appuser
 
 WORKDIR /app
 
-# Copy go mod and sum files
-COPY go.mod ./
-
-# Download all dependencies
-RUN go mod download
-
-# Copy the source code
-COPY . .
-
-# Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o monolith .
-
-# Use a smaller image for the final application
-FROM alpine:latest  
-
-RUN apk --no-cache add ca-certificates
-
-WORKDIR /root/
-
-# Copy the binary from builder
 COPY --from=builder /app/monolith .
 
-# Expose the application port
+USER appuser
+
 EXPOSE 8080
 
-# Command to run the executable
 CMD ["./monolith"]

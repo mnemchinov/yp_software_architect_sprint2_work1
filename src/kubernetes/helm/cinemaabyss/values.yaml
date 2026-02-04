@@ -4,8 +4,11 @@ global:
   domain: cinemaabyss.example.com
 
 # Image pull secrets (base64 encoded docker config)
+# IMPORTANT: Replace this with your actual docker config from ~/.docker/config.json
+# Run: cat ~/.docker/config.json | base64
+# Then update the dockerconfigjson value below
 imagePullSecrets:
-  dockerconfigjson: eyJhdXRocyI6IHsiZ2hjci5pbyI6IHsiYXV0aCI6ICJiVzVsYldOb2FXNXZkanBuYUhCZllYTlVaalZoUjJsVk9VSXdla3gwZWpRMWNHb3pVa1Z4U21Nd2VUZFZNekZpU1hSUyJ9fX0=
+  dockerconfigjson: ""
 
 # Database configuration
 database:
@@ -36,7 +39,7 @@ monolith:
   image:
     repository: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/monolith
     tag: latest
-    pullPolicy: Never
+    pullPolicy: Always
   replicas: 1
   resources:
     limits:
@@ -56,7 +59,7 @@ proxyService:
   image:
     repository: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/proxy-service
     tag: latest
-    pullPolicy: Never
+    pullPolicy: Always
   replicas: 1
   resources:
     limits:
@@ -76,7 +79,7 @@ moviesService:
   image:
     repository: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/movies-service
     tag: latest
-    pullPolicy: Never
+    pullPolicy: Always
   replicas: 1
   resources:
     limits:
@@ -96,7 +99,7 @@ eventsService:
   image:
     repository: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/events-service
     tag: latest
-    pullPolicy: Never
+    pullPolicy: Always
   replicas: 1
   resources:
     limits:
@@ -186,4 +189,15 @@ ingress:
 # Application configuration
 config:
   gradualMigration: "true"
-  moviesMigrationPercent: "50"
+  moviesMigrationPercent: "100"
+  monolithUrl: "http://monolith:8080"
+  moviesServiceUrl: "http://movies-service:8081"
+  eventsServiceUrl: "http://events-service:8082"
+
+# Database credentials (used by configmap and secret)
+postgres:
+  fullnameOverride: postgres
+  auth:
+    username: postgres
+    password: postgres_password
+    database: cinemaabyss
