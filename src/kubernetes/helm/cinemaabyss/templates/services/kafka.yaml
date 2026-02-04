@@ -1,0 +1,80 @@
+{{- if .Values.kafka.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: kafka
+    {{- include "cinemaabyss.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.kafka.replicas }}
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+      - name: kafka
+        image: {{ .Values.kafka.image.repository }}:{{ .Values.kafka.image.tag }}
+        ports:
+        - containerPort: 9092
+        env:
+        - name: KAFKA_BROKER_ID
+          value: "1"
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: "zookeeper:2181"
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: "PLAINTEXT://kafka:9092"
+        - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: "1"
+        resources:
+          {{- toYaml .Values.kafka.resources | nindent 10 }}
+        volumeMounts:
+        - name: kafka-storage
+          mountPath: /var/lib/kafka/data
+      volumes:
+      - name: kafka-storage
+        {{- if .Values.kafka.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: kafka-pvc
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: kafka
+    {{- include "cinemaabyss.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: kafka
+  ports:
+  - name: kafka
+    port: 9092
+    targetPort: 9092
+  type: ClusterIP
+{{- if .Values.kafka.persistence.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kafka-pvc
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "cinemaabyss.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.kafka.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.kafka.persistence.size }}
+{{- end }}
+{{- end }}
