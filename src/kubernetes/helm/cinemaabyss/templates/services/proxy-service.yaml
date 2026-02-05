@@ -31,16 +31,13 @@ spec:
         env:
           - name: PORT
             value: "8000"
-          - name: MONOLITH_URL
-            value: "http://monolith:8080"
-          - name: MOVIES_SERVICE_URL
-            value: "http://movies-service:8081"
-          - name: EVENTS_SERVICE_URL
-            value: "http://events-service:8082"
           - name: GRADUAL_MIGRATION
             value: {{ .Values.config.gradualMigration | quote }}
           - name: MOVIES_MIGRATION_PERCENT
             value: {{ .Values.config.moviesMigrationPercent | quote }}
+        envFrom:
+        - configMapRef:
+            name: cinemaabyss-config
         resources:
           requests:
             memory: {{ .Values.proxyService.resources.requests.memory }}
