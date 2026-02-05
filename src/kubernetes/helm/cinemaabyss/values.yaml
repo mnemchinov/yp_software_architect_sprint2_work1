@@ -3,9 +3,13 @@ global:
   namespace: cinemaabyss
   domain: cinemaabyss.example.com
 
-# Image pull secrets
+# Image pull secrets (base64 encoded docker config)
+# IMPORTANT: Replace this with your actual docker config from ~/.docker/config.json
+# Run: cat ~/.docker/config.json | base64
+# Then update the dockerconfigjson value below
 imagePullSecrets:
-  dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaGNyLmlvIjogewoJCQkiYXV0aCI6
+  dockerconfigjson: ""
+
 # Database configuration
 database:
   host: postgres
@@ -33,7 +37,7 @@ database:
 monolith:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/monolith
+    repository: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/monolith
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -53,7 +57,7 @@ monolith:
 proxyService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/proxy-service
+    repository: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/proxy-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -73,7 +77,7 @@ proxyService:
 moviesService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/movies-service
+    repository: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/movies-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -93,7 +97,7 @@ moviesService:
 eventsService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/events-service
+    repository: ghcr.io/mnemchinov/yp_software_architect_sprint2_work1/events-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -166,20 +170,53 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
   hosts:
     - host: cinemaabyss.example.com
       paths:
         - path: /
           pathType: Prefix
-          service: proxy-service
-          port: 80
+          serviceName: proxy-service
+          servicePort: 80
+        - path: /api/movies
+          pathType: Prefix
+          serviceName: movies-service
+          servicePort: 8081
         - path: /api/events
           pathType: Prefix
-          service: events-service
-          port: 8082
+          serviceName: events-service
+          servicePort: 8082
+        - path: /api/users
+          pathType: Prefix
+          serviceName: monolith
+          servicePort: 8080
+        - path: /api/payments
+          pathType: Prefix
+          serviceName: monolith
+          servicePort: 8080
+        - path: /api/subscriptions
+          pathType: Prefix
+          serviceName: monolith
+          servicePort: 8080
+        - path: /health
+          pathType: Prefix
+          serviceName: proxy-service
+          servicePort: 80
 
 # Application configuration
 config:
-  # Strangler Fig configuration
   gradualMigration: "true"
   moviesMigrationPercent: "100"
+  monolithUrl: "http://monolith:8080"
+  moviesServiceUrl: "http://movies-service:8081"
+  eventsServiceUrl: "http://events-service:8082"
+
+# Database credentials (used by configmap and secret)
+postgres:
+  fullnameOverride: postgres
+  auth:
+    username: postgres
+    password: postgres_password
+    database: cinemaabyss

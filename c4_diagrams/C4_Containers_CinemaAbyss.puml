@@ -1,0 +1,52 @@
+@startuml C4_Containers_CinemaAbyss
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "Пользователь", "Клиент кинотеатра")
+Person(admin, "Администратор", "Поддержка и мониторинг")
+
+System_Boundary(cinemaAbyss, "Платформа «Кинобездна»") {
+    Container(proxyService, "Proxy Service", "Go", "API Gateway / Strangler Fig")
+    Container(moviesService, "Movies Service", "Go", "Метаданные фильмов")
+    Container(eventsService, "Events Service", "Go", "Kafka Producer/Consumer")
+    Container(usersService, "Users Service", "Go", "Пользователи")
+    Container(paymentsService, "Payments Service", "Go", "Платежи")
+    Container(monolith, "Monolith", "Go", "Монолит (постепенно замещается)")
+    ContainerDb(postgres, "PostgreSQL", "PostgreSQL 14", "База данных")
+    ContainerDb(kafka, "Apache Kafka", "Kafka 2.13", "Брокер сообщений")
+}
+
+System_Ext(cdns, "CDN", "Доставка видео")
+System_Ext(recommendations, "Рекомендательная система", "Внешний сервис")
+System_Ext(paymentProvider, "Платёжный шлюз", "Банки, Stripe")
+System_Ext(loyalty, "Сервисы лояльности", "Интеграции")
+System_Ext(marketplace, "Маркетплейсы", "Партнёры")
+
+Rel(user, proxyService, "Запросы к API", "HTTPS/REST")
+Rel(user, cdns, "Потоковое видео", "HLS/DASH")
+Rel(admin, proxyService, "Мониторинг", "HTTPS/REST")
+
+Rel(proxyService, moviesService, "/api/movies (по %)", "HTTPS/REST")
+Rel(proxyService, monolith, "Fallback", "HTTPS/REST")
+Rel(proxyService, eventsService, "События", "HTTPS/REST")
+
+Rel(moviesService, recommendations, "Рекомендации", "HTTPS/REST")
+Rel(moviesService, eventsService, "События просмотра", "HTTPS/REST")
+Rel(usersService, eventsService, "События пользователя", "HTTPS/REST")
+Rel(paymentsService, eventsService, "События платежей", "HTTPS/REST")
+Rel(paymentsService, paymentProvider, "Платежи", "HTTPS/REST")
+
+Rel(eventsService, kafka, "Pub/Sub", "TCP")
+Rel(kafka, eventsService, "Consume", "TCP")
+
+Rel(moviesService, postgres, "Метаданные", "SQL")
+Rel(usersService, postgres, "Профили", "SQL")
+Rel(paymentsService, postgres, "Платежи", "SQL")
+Rel(monolith, postgres, "Общая БД", "SQL")
+
+Rel(monolith, moviesService, "Strangler Fig", "HTTPS/REST")
+
+Rel(eventsService, loyalty, "Лояльность", "HTTPS/REST")
+Rel(eventsService, marketplace, "Партнёры", "HTTPS/REST")
+
+@enduml

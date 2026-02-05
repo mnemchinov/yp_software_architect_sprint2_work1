@@ -1,0 +1,12 @@
+apiVersion: v2
+name: cinemaabyss
+description: CinemaAbyss microservices platform
+type: application
+version: 1.0.0
+appVersion: "1.0"
+home: https://github.com/mnemchinov/yp_software_architect_sprint2_work1
+sources:
+  - https://github.com/mnemchinov/yp_software_architect_sprint2_work1
+maintainers:
+  - name: CinemaAbyss Team
+    email: team@cinemaabyss.com
